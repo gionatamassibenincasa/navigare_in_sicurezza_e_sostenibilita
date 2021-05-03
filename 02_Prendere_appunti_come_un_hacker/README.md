@@ -125,7 +125,7 @@ Noterai che mentre il pannello di destra presenta un rendering più
 elegante del testo, il file Markdown originale a sinistra è ancora
 abbastanza leggibile.
 
-**Hack time!**
+**Hacking time!**
 
 Ora, immergetevi nella lezione scrivendo la nostra sintassi Markdown.
 Crea un nuovo documento in [StackEdit](https://stakedit.io) facendo clic sull’icona della cartella in alto a destra e selezionando *New document* . È possibile inserire un titolo per il documento nella casella di testo nella parte superiore della pagina.
