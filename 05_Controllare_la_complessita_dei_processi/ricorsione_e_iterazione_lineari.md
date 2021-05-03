@@ -53,10 +53,10 @@ che conta da 1 a $n$.
 Possiamo descrivere il calcolo dicendo che il contatore e il prodotto cambiano simultaneamente da un passaggio all'altro in base alla regola
 
 $$
-\begin{eqnarray*}
+\begin{aligned}
   \mathrm{prodotto}  & \leftarrow & \mathrm{contatore} \cdot \mathrm{prodotto} \\
   \mathrm{contatore} & \leftarrow & \mathrm{contatore} + 1
-\end{eqnarray*}
+\end{aligned}
 $$
 
 e che $n!$ è il valore del prodotto quando il contatore supera $n$.
