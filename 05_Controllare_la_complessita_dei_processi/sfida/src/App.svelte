@@ -87,6 +87,7 @@ bind:value={soluzione[indice]} />
 	}
 	}
 }>Esegui</button>
+<button on:click={() => {soluzione[indice] = esercizi[indice].scheletro}}>Ripristina</button>
 <pre style={vconsole_style[indice]}>{vconsole[indice]}</pre>
 {/each}
 
