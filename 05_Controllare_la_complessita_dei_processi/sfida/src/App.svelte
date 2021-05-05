@@ -6,25 +6,75 @@
 </svelte:head>
 
 <script lang="ts">
-	import { AceEditor } from "svelte-ace";
+	import { AceEditor, Editor } from "svelte-ace";
 	import "brace/mode/c_cpp";
 	import "brace/theme/chrome";
 	import esercizi  from "./esercizi";
 	//import * from "./JSCPP.es5.min";
+
+	const vc_normal = "min-height: 25px; background-color: grey; color: azure;";
+  	const vc_error = "min-height: 25px; background-color: red; color: yellow;";
+  
+	class Ambiente {
+		src: string;
+		vconsole: string;
+		vconsole_style: string;
+		indice: number;
+		chiaveLocalStorage: string;
+		// Per gestione localstorage
+		// sporco: boolean;
+		constructor(i: number) {
+			this.indice = i;
+			this.chiaveLocalStorage = "sorgente_" + this.indice;
+			let savedSrc = localStorage.getItem(this.chiaveLocalStorage);
+			if (savedSrc) {
+				this.src = savedSrc;
+			} else {
+				this.src = esercizi[i].scheletro;
+			}
+			this.vconsole = "";
+			this.vconsole_style = vc_normal;
+			// this.sporco = false;
+		}
+		public esegui(): void {
+			this.vconsole = "";
+			localStorage.setItem(this.chiaveLocalStorage, this.src);
+			try {
+				JSCPP.run(this.src, "", 
+				{
+					stdio: {
+						write: s => {
+							this.vconsole += s;
+							console.log(s);
+						}
+					}
+				});
+				this.vconsole_style = vc_normal;
+			} catch(err) {
+				this.vconsole_style = vc_error;
+				this.vconsole += err;
+			}
+			// forza aggiornamenti
+			ambienti = ambienti;
+		}
+
+		public ripristina () : void {
+			this.src = esercizi[this.indice].scheletro;
+			this.vconsole = "";
+			this.vconsole_style = vc_normal;
+			// forza aggiornamenti
+			ambienti = ambienti;
+		}
+	};
 	
   let nome = '';
   let cognome = '';
   let classe = 'Navigare in sicurezza e sostenibilità';
-  let soluzione = new Array(esercizi.length);
-  let vconsole  = new Array(esercizi.length);
-  let vconsole_style = new Array(esercizi.length);
-  const vc_normal = "min-height: 25px; background-color: grey; color: azure;";
-  const vc_error = "min-height: 25px; background-color: red; color: yellow;";
-  for (let i = 0; i < esercizi.length; i++) {
-	  soluzione[i] = esercizi[i].scheletro;
-	  vconsole[i] = "";
-	  vconsole_style[i] = vc_normal;
-  };
+  const n = esercizi.length
+  let ambienti : Ambiente[] = new Array(n);
+  for (let i = 0; i < n; i++) {
+	  ambienti[i] = new Ambiente(i);
+  }
 </script>
 
 <h1>Sfide di programmazione in C/C++</h1>
@@ -39,12 +89,15 @@
 <hr />
 
 {#if (cognome != "" && nome != "") || location.hostname == 'localhost'}
+
 <h2>2. Risolvi gli esercizi</h2>
 
 {#each esercizi as esercizio, indice}
+
 {#if indice > 1}
 	<hr />
 {/if}
+
 <h3>Es. {indice + 1} --  {esercizio.progetto}</h3>
 <p>{@html esercizio.testo}</p>
 <AceEditor
@@ -64,31 +117,12 @@ width='100%'
 height='300px'
 lang="c_cpp"
 theme="chrome"
-bind:value={soluzione[indice]} />
+bind:value={ambienti[indice].src} />
 
 <!--textarea bind:value={soluzione[indice]}></textarea-->
-<button on:click={
-	() => {
-	vconsole[indice] = "";
-	try {
-		JSCPP.run(soluzione[indice], "", 
-		{
-			stdio: {
-				write: s => {
-					vconsole[indice] += s;
-					console.log(s);
-				}
-			}
-		});
-		vconsole_style[indice] = vc_normal;
-	} catch(err) {
-		vconsole_style[indice] = vc_error;
-		vconsole[indice] += err;
-	}
-	}
-}>Esegui</button>
-<button on:click={() => {soluzione[indice] = esercizi[indice].scheletro}}>Ripristina</button>
-<pre style={vconsole_style[indice]}>{vconsole[indice]}</pre>
+<button on:click={ambienti[indice].esegui.bind(ambienti[indice])}>Esegui</button>
+<button on:click={ambienti[indice].ripristina.bind(ambienti[indice])}>Ripristina</button>
+<pre style={ambienti[indice].vconsole_style}>{ambienti[indice].vconsole}</pre>
 {/each}
 
 <hr />
