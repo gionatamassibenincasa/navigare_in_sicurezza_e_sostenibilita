@@ -9,8 +9,14 @@
 	import { AceEditor, Editor } from "svelte-ace";
 	import "brace/mode/c_cpp";
 	import "brace/theme/chrome";
+	import "brace/ext/language_tools";
 	import esercizi  from "./esercizi";
 	//import * from "./JSCPP.es5.min";
+	const options = {
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: false
+    }
 
 	const vc_normal = "min-height: 25px; background-color: grey; color: azure;";
   	const vc_error = "min-height: 25px; background-color: red; color: yellow;";
@@ -117,7 +123,8 @@ width='100%'
 height='300px'
 lang="c_cpp"
 theme="chrome"
-bind:value={ambienti[indice].src} />
+bind:value={ambienti[indice].src}
+{options} />
 
 <!--textarea bind:value={soluzione[indice]}></textarea-->
 <button on:click={ambienti[indice].esegui.bind(ambienti[indice])}>Esegui</button>
